@@ -1,7 +1,5 @@
 # mall
 
-么么哒
-
 ## Project setup
 ```
 npm install
