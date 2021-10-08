@@ -6,108 +6,7 @@
       <recommend-view :recommends="recommends" />
       <feature-view />
       <tab-control :titles="['流行', '新款', '精选']"></tab-control>
-      <ul>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-      </ul>
+      <goods-list :goods="goods['pop'].list" />
     </div>
   </div>
 </template>
@@ -119,6 +18,7 @@ import TabControl from "components/content/tabControl/TabControl";
 import HomeSwiper from "./childcomponents/HomeSwiper";
 import RecommendView from "./childcomponents/RecommendView";
 import FeatureView from "./childcomponents/FeatureView";
+import GoodsList from "components/content/goods/GoodsList";
 
 import { getHomeMultidata, getHomeData, RECOMMEND, BANNER } from "network/home";
 
@@ -128,12 +28,18 @@ export default {
     TabControl,
     HomeSwiper,
     RecommendView,
-    FeatureView
+    FeatureView,
+    GoodsList
   },
   data() {
     return {
       banners: [],
-      recommends: []
+      recommends: [],
+      goods: {
+        pop: { page: 0, list: [] },
+        new: { page: 0, list: [] },
+        sell: { page: 0, list: [] }
+      }
     };
   },
   activated: function() {
@@ -144,7 +50,12 @@ export default {
   },
   created() {
     console.log("创建home");
+    // 请求多个数据
     this.getMultiData();
+    // 请求商品数据
+    this.getHomeData("pop");
+    this.getHomeData("new");
+    this.getHomeData("sell");
   },
   methods: {
     getMultiData() {
@@ -155,6 +66,13 @@ export default {
         // this.$nextTick(() => {
         //   this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop;
         // });
+      });
+    },
+    getHomeData(type) {
+      const page = this.goods[type].page + 1;
+      getHomeData(type, page).then(res => {
+        this.goods[type].list.push(...res.data.list);
+        this.goods[type].page += 1;
       });
     }
   }
