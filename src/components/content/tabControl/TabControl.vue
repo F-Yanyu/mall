@@ -29,6 +29,7 @@ export default {
   methods: {
     tabClick(index) {
       this.currentIndex = index;
+      this.$emit("tabClick", index);
     }
   }
 };
@@ -41,6 +42,7 @@ export default {
   background-color: #fff;
   position: sticky;
   top: 44px;
+  z-index: 9;
 }
 .tabcontrol-item {
   flex: 1;
