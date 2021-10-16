@@ -127,15 +127,16 @@ export default {
     // this.scroll = new BScroll(this.$refs.aaaa);
     this.scroll = new BScroll(document.querySelector(".warpper"), {
       probeType: 3,
+      click: true,
       pullUpLoad: true
     });
     this.scroll.on("scroll", position => {
       // console.log(position);
     });
     this.scroll.on("pullingUp", () => {
-      // setTimeout(() => {
-      //   this.scroll.finshPullUp();
-      // }, 2000);
+      setTimeout(() => {
+        this.scroll.finishPullUp();
+      }, 2000);
       console.log("上拉加载更多");
     });
   }

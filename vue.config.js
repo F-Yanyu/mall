@@ -3,11 +3,12 @@ module.exports = {
     resolve: {
       extensions: [],
       alias: {
+        'components': '@/components',
+        'content': 'components/content',
+        'common': 'components/common',
         'assets': '@/assets',
-        'common':'@/common',
-        'components':'@/components',
-        'network':'@/network',
-        'views':'@/views'
+        'network': '@/network',
+        'views': '@/views',
       }
     }
   }

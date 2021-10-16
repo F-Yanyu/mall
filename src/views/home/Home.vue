@@ -2,8 +2,7 @@
   <div id="home">
     <div>
       <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-
-      <scroll class="counter">
+      <scroll class="content" ref="scroll">
         <home-swiper :banners="banners" ref="hSwiper" />
         <recommend-view :recommends="recommends" />
         <feature-view />
@@ -13,6 +12,8 @@
         ></tab-control>
         <goods-list :goods="showgoods" />
       </scroll>
+
+      <back-top @click.native="backClick"></back-top>
     </div>
   </div>
 </template>
@@ -24,8 +25,9 @@ import TabControl from "components/content/tabControl/TabControl";
 import HomeSwiper from "./childcomponents/HomeSwiper";
 import RecommendView from "./childcomponents/RecommendView";
 import FeatureView from "./childcomponents/FeatureView";
-import GoodsList from "components/content/goods/GoodsList";
-import Scroll from "components/common/scroll/Scroll";
+import GoodsList from "content/goods/GoodsList";
+import Scroll from "common/scroll/Scroll";
+import BackTop from "content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeData, RECOMMEND, BANNER } from "network/home";
 
@@ -37,7 +39,8 @@ export default {
     RecommendView,
     FeatureView,
     GoodsList,
-    Scroll
+    Scroll,
+    BackTop
   },
   data() {
     return {
@@ -58,7 +61,7 @@ export default {
     this.$refs.hSwiper.stopTimer();
   },
   created() {
-    console.log("创建home");
+    // console.log("创建home");
     // 请求多个数据
     this.getMultiData();
     // 请求商品数据
@@ -108,6 +111,9 @@ export default {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
       });
+    },
+    backClick() {
+      this.$refs.scroll.scrollTo(0, 0, 300); //0,0是x,y轴，300是时间
     }
   }
 };
@@ -115,8 +121,9 @@ export default {
 
 <style scoped>
 .home {
+  padding-top: 44px;
+  height: 100vh;
   position: relative;
-  height: 100%;
 }
 .home-nav {
   background-color: var(--color-tint);
@@ -127,9 +134,13 @@ export default {
   right: 0;
   z-index: 9;
 }
-.counter {
+.tab-control {
+  position: sticky;
+  top: 44px;
+}
+.content {
   position: absolute;
-  overflow: hidden;
+  height: 500px;
   top: 44px;
   bottom: 49px;
 }
