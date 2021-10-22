@@ -8,7 +8,7 @@
         :probe-type="3"
         :pull-up-load="true"
         @scroll="contentBackTop"
-        @pull-up-load="loadMore"
+        @pullingUp="loadMore"
       >
         <home-swiper :banners="banners" ref="hSwiper" />
         <recommend-view :recommends="recommends" />
@@ -76,6 +76,10 @@ export default {
     this.getHomeData("pop");
     this.getHomeData("new");
     this.getHomeData("sell");
+    this.$bus.$on("itemImageLoad", () => {
+      // scroll属性，refresh()，方法，重新获取scroll.scrollerheight,滚动高度
+      this.$refs.scroll.refresh();
+    });
   },
   computed: {
     showgoods() {
@@ -127,6 +131,7 @@ export default {
       getHomeData(type, page).then(res => {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
+        this.$refs.scroll.finishPullUp();
       });
     }
   }
