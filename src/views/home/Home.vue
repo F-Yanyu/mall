@@ -2,7 +2,14 @@
   <div id="home">
     <div>
       <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-      <scroll class="content" ref="scroll">
+      <scroll
+        class="content"
+        ref="scroll"
+        :probe-type="3"
+        :pull-up-load="true"
+        @scroll="contentBackTop"
+        @pull-up-load="loadMore"
+      >
         <home-swiper :banners="banners" ref="hSwiper" />
         <recommend-view :recommends="recommends" />
         <feature-view />
@@ -12,8 +19,8 @@
         ></tab-control>
         <goods-list :goods="showgoods" />
       </scroll>
-
-      <back-top @click.native="backClick"></back-top>
+      <!-- 组件不能直接做点击，需要添加".native" -->
+      <back-top @click.native="backClick" v-show="isBackShow"></back-top>
     </div>
   </div>
 </template>
@@ -26,8 +33,8 @@ import HomeSwiper from "./childcomponents/HomeSwiper";
 import RecommendView from "./childcomponents/RecommendView";
 import FeatureView from "./childcomponents/FeatureView";
 import GoodsList from "content/goods/GoodsList";
-import Scroll from "common/scroll/Scroll";
-import BackTop from "content/backTop/BackTop";
+import Scroll from "components/common/scroll/Scroll";
+import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeData, RECOMMEND, BANNER } from "network/home";
 
@@ -51,7 +58,8 @@ export default {
         new: { page: 0, list: [] },
         sell: { page: 0, list: [] }
       },
-      currentType: "pop"
+      currentType: "pop",
+      isBackShow: false
     };
   },
   activated: function() {
@@ -92,6 +100,15 @@ export default {
           break;
       }
     },
+    backClick() {
+      this.$refs.scroll.scrollTo(0, 0, 300); //0,0是x,y轴，300是时间
+    },
+    contentBackTop(position) {
+      this.isBackShow = -position.y > 1000;
+    },
+    loadMore() {
+      this.getHomeData(this.currentType);
+    },
     /**
      * 网络请求相关方法
      */
@@ -111,9 +128,6 @@ export default {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
       });
-    },
-    backClick() {
-      this.$refs.scroll.scrollTo(0, 0, 300); //0,0是x,y轴，300是时间
     }
   }
 };
@@ -121,7 +135,7 @@ export default {
 
 <style scoped>
 .home {
-  padding-top: 44px;
+  /* padding-top: 44px; */
   height: 100vh;
   position: relative;
 }
@@ -140,8 +154,8 @@ export default {
 }
 .content {
   position: absolute;
-  height: 500px;
+  overflow: hidden;
   top: 44px;
-  bottom: 49px;
+  bottom: 57px;
 }
 </style>
